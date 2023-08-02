@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.actions.act_window" id="details_student_faculty_action">
+        <field name="name">Student Faculty Club</field>
+        <field name="res_model">student.faculty</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem name="SFC" id="menu_sfc"
+              action="details_student_faculty_action"
+              sequence="6"/>
+    <menuitem name="SFC" id="menu_sfc_1"
+              action="details_student_faculty_action"
+              parent="menu_sfc"
+              sequence="1"/>
+
+    <record id="student_faculty_club_tree_view" model="ir.ui.view">
+        <field name="name">Student Faculty Club</field>
+        <field name="model">student.faculty</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="student_id"/>
+                <field name="topic"/>
+                <!-- <field name="exam_type"/> -->
+            </tree>
+
+        </field>
+    </record>
+
+    <record id="student_faculty_club_form_view" model="ir.ui.view">
+        <field name="name">Student Faculty Club</field>
+        <field name="model">student.faculty</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Student Faculty Club">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="topic"/>
+                            <field name="batch_id"/>
+                            <field name="student_id"/>
+                            <field name="coordinator"/>
+                            <field name="photo" widget="image"/>
+                        </group>
+                        <group>
+                            <field name="students_count"/>
+                            <field name="start_datetime"/>
+                            <field name="end_datetime"/>
+                            <field name="hours"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+</odoo>
