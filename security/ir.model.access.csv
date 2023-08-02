@@ -1,3 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 
 access_sfc,access_details,model_student_faculty,base.group_user,1,1,1,1
+access_sfc_rate,access_details,model_student_faculty_rate,base.group_user,1,1,1,1
+access_sfc_pay_wizard,access_details,model_student_faculty_pay_wizard,Faculty.group_accounting_manager,1,1,1,1

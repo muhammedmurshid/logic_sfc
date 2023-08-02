@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="student_payment_rate" model="student.faculty.rate">
+            <field name="rate">0</field>
+        </record>
+    </data>
+</odoo>

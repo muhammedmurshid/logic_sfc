@@ -2,10 +2,12 @@
     'name': "Student Faculty Club",
     'version': "14.0.1.0",
     'sequence': "0",
-    'depends': ['base', 'logic_base'],
+    'depends': ['base', 'Faculty','logic_base'],
     'data': [
         'security/ir.model.access.csv',
+        'wizard/pay_wizard_view.xml',
         'views/student_faculty_club.xml',
+        'data/payment_rate_data.xml',
     ],
     'demo': [],
     'summary': "Student Faculty Club",
