@@ -62,7 +62,7 @@
                             <field name="start_datetime"/>
                             <field name="end_datetime"/>
                             <field name="hours"/>
-                            <field name="payment_rate" widget="monetary"/>
+                            <field name="payment_rate" widget="monetary" attrs="{'readonly':[('state','in',('paid','reject'))]}"/>
                         </group>
                     </group>
                     <group>
