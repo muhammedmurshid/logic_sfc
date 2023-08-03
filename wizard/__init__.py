@@ -1,1 +1,1 @@
-from . import pay_amount_wizard
+from . import pay_request_wizard

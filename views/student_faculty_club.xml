@@ -35,15 +35,17 @@
         <field name="arch" type="xml">
             <form string="Student Faculty Club">
                 <header>
-                    <button name="submit_for_payment" groups="faculty.coordinator_user" string="Submit for Payment" help="Click here to submit the draft for payment" type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','draft')]}"/>
-                    <button name="register_payment" groups="faculty.group_accounting_manager" string="Register Payment" help="Click here to pay the total amount" type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','submit_payment')]}"/>
-                    <button name="reject_payment" groups="faculty.group_accounting_manager" string="Reject" help="Click here to pay the total amount" type="object" class="btn-danger" attrs="{'invisible':[('state','!=','submit_payment')]}"/>
-                    <button name="reset_to_draft" string="Reset to Draft" help="Click here to reset the record to draft state" type="object" class="btn-warning" attrs="{'invisible':[('state','!=','submit_payment')]}"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,submit_payment,paid,reject"/>
+                    <button name="confirm_sfc" groups="faculty.coordinator_user" string="Confirm" help="Click here to confirm the record" type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','draft')]}"/>
+                    <button name="request_payment" string="Request Payment" help="Click here to pay the total amount" type="object" class="oe_highlight" attrs="{'invisible':[('state','not in',('confirm','reject') )]}"/>
+                    <button name="reject_payment" groups="faculty.group_accounting_manager" string="Reject" help="Click here to pay the total amount" type="object" class="btn-danger" attrs="{'invisible':[('state','!=','confirm')]}"/>
+                    <button name="reset_to_draft" string="Reset to Draft" help="Click here to reset the record to draft state" type="object" class="btn-warning" attrs="{'invisible':[('state','!=','confirm')]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,payment_request,paid,reject"/>
                 </header>
                 <sheet>
                     <widget name="web_ribbon" text="PAID" bg_color="bg-success" attrs="{'invisible':[('state','!=','paid')]}"/>
                     <widget name="web_ribbon" text="REJECTED" bg_color="bg-danger" attrs="{'invisible':[('state','!=','reject')]}"/>
+                    <widget name="web_ribbon" text="PAYMENT REQUESTED" bg_color="bg-warning" attrs="{'invisible':[('state','!=','payment_request')]}"/>
+
                     <group>
                         <group>
                             <field name="topic"/>

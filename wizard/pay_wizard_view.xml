@@ -2,23 +2,24 @@
 <odoo>
     <data>
         <record id="pay_amount_form_view" model="ir.ui.view">
-            <field name="name">Register Payment</field>
-            <field name="model">student.faculty.pay.wizard</field>
+            <field name="name">Request Payment</field>
+            <field name="model">student.faculty.pay.request.wizard</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Register Payment">
+                <form string="Create Payment Request">
                     <group>
                     <group>
-                        <field name="journal"/>
-                        <field name="recipient_bank"/>
+                        <field name="sfc_id"/>
+                        <field name="coordinator"/>
+                        <field name="description"/>
                     </group>
                     <group>
-                        <field name="date"/> 
+                        <field name="request_date"/> 
                         <field name="amount"/>
                     </group>
                     </group>
                     <footer>
-                        <button string="Create Payment" name="action_create_payments" type="object" class="oe_highlight"/>
+                        <button string="Create Payment Request" name="action_create_payment_request" type="object" class="oe_highlight"/>
                         <button string="Cancel" class="btn btn-secondary" special="cancel"/>
                     </footer>
                 </form>
@@ -28,7 +29,7 @@
         <!-- Define the action -->
         <record id="pay_amount_action" model="ir.actions.act_window">
             <field name="name">Pay Action</field>
-            <field name="res_model">student.faculty.pay.wizard</field>
+            <field name="res_model">student.faculty.pay.request.wizard</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="pay_amount_form_view"/>
             <field name="target">new</field>

@@ -43,12 +43,13 @@ class StudentFacultyClub(models.Model):
         for record in self:
             record.amount_total = record.hours * record.payment_rate
     amount_total = fields.Monetary(string="Total Amount",compute="_compute_amount_total")
-    state = fields.Selection(string="State",selection=[('draft','Draft'),('submit_payment','Submitted For Payment'),('paid','Paid'),('reject','Rejected')],tracking=True,default='draft')
+    state = fields.Selection(string="State",selection=[('draft','Draft'),('confirm','Confirmed'),('payment_request','Payment Requested'),('paid','Paid'),('reject','Rejected')],tracking=True,default='draft')
     account_name = fields.Char(string="Account Name")
     account_no = fields.Char(string="Account No")
     ifsc_code = fields.Char(string="IFSC Code")
     bank_name = fields.Char(string="Bank Name")
     bank_branch = fields.Char(string="Bank Branch")
+    payment_request = fields.Many2one('payment.request',string="Payment Request")
     def _get_default_payment_rate(self):
         payment_rate = self.env['student.faculty.rate'].search([],limit=1)
         if payment_rate:
@@ -57,9 +58,9 @@ class StudentFacultyClub(models.Model):
             return False
     payment_rate = fields.Monetary(string="Rate Per Hour",default=_get_default_payment_rate)
 
-    def submit_for_payment(self):
+    def confirm_sfc(self):
         self.write({
-            'state':'submit_payment'
+            'state':'confirm'
         })
 
     def reset_to_draft(self):
@@ -72,15 +73,23 @@ class StudentFacultyClub(models.Model):
             'photo_show': not self.photo_show,
         })
 
-    def register_payment(self):
+    def request_payment(self):
         # Display a popup with the entered details
         return {
             'type': 'ir.actions.act_window',
             'name': 'Register Payment',
-            'res_model': 'student.faculty.pay.wizard',
+            'res_model': 'student.faculty.pay.request.wizard',
             'view_mode': 'form',
             'target': 'new',
-            'context': {'amount': self.amount_total,'sfc_id':self.id}
+            'context': {
+                'amount': self.amount_total,
+                'sfc_id':self.id,
+                'account_name':self.account_name,
+                'account_no': self.account_no,
+                'ifsc_code':self.ifsc_code,
+                'bank_name':self.bank_name,
+                'bank_branch':self.bank_branch,
+                }
         }
     def reject_payment(self):
         self.state = 'reject'
