@@ -19,10 +19,12 @@
         <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="topic"/>
-                <field name="student_id"/>
+                <field name="name"/>
+                <!-- <field name="topic"/>
+                <field name="student_id"/> -->
                 <field name="batch_id"/>
                 <field name="coordinator"/>
+                <field string="Status" name="state" decoration-success="state == 'paid'" decoration-info="state == 'confirm'" decoration-warning="state == 'payment_request'" decoration-danger="state == 'reject'" widget="badge" />
             </tree>
 
         </field>
