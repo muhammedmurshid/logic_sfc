@@ -33,6 +33,7 @@ class  PayRequestWizard(models.TransientModel):
         self.env['payment.request'].sudo().create({
             'source_type':'sfc',
             'sfc_source':self.sfc_id.id,
+            # 'state':'payment_request',
             'amount':self.amount,
             'description':self.description  ,
             'account_name':self.account_name,

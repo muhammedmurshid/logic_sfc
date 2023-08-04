@@ -37,7 +37,7 @@
                 <header>
                     <button name="confirm_sfc" groups="faculty.coordinator_user" string="Confirm" help="Click here to confirm the record" type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','draft')]}"/>
                     <button name="request_payment" string="Request Payment" help="Click here to pay the total amount" type="object" class="oe_highlight" attrs="{'invisible':[('state','not in',('confirm','reject') )]}"/>
-                    <button name="reject_payment" groups="faculty.group_accounting_manager" string="Reject" help="Click here to pay the total amount" type="object" class="btn-danger" attrs="{'invisible':[('state','!=','confirm')]}"/>
+                    <!-- <button name="reject_payment" groups="faculty.group_accounting_manager" string="Reject" help="Click here to pay the total amount" type="object" class="btn-danger" attrs="{'invisible':[('state','!=','confirm')]}"/> -->
                     <button name="reset_to_draft" string="Reset to Draft" help="Click here to reset the record to draft state" type="object" class="btn-warning" attrs="{'invisible':[('state','!=','confirm')]}"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,confirm,payment_request,paid,reject"/>
                 </header>
