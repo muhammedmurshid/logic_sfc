@@ -1,4 +1,5 @@
 from odoo import fields,models,api
+from odoo.exceptions import UserError
 
 class StudentFacultyClub(models.Model):
     _name="student.faculty"
@@ -43,7 +44,7 @@ class StudentFacultyClub(models.Model):
         for record in self:
             record.amount_total = record.hours * record.payment_rate
     amount_total = fields.Monetary(string="Total Amount",compute="_compute_amount_total")
-    state = fields.Selection(string="State",selection=[('draft','Draft'),('confirm','Confirmed'),('payment_request','Payment Requested'),('paid','Paid'),('reject','Rejected')],tracking=True,default='draft')
+    state = fields.Selection(string="State",selection=[('draft','Draft'),('confirm','Confirmed'),('payment_request','Payment Requested'),('paid','Paid'),('reject','Rejected')],tracking=True)
     account_name = fields.Char(string="Account Name")
     account_no = fields.Char(string="Account No")
     ifsc_code = fields.Char(string="IFSC Code")
@@ -58,7 +59,16 @@ class StudentFacultyClub(models.Model):
             return False
     payment_rate = fields.Monetary(string="Rate Per Hour",default=_get_default_payment_rate)
 
+
+    @api.model
+    def create(self, vals):
+        vals['state'] = 'draft'
+        result = super(StudentFacultyClub, self).create(vals)
+        return result
+
     def confirm_sfc(self):
+        if not self.start_datetime or not self.end_datetime:
+            raise UserError('Datetimes cannot be empty when confirming the record')
         self.write({
             'state':'confirm'
         })
