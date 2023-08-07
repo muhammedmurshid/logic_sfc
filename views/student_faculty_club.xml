@@ -122,5 +122,21 @@
             </tree>
         </field>
     </record>
+
+    <record id="student_faculty_search" model="ir.ui.view">
+        <field name="name">student.faculty.search</field>
+        <field name="model">student.faculty</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="Paid" name="active" domain="[('state', '=','paid')]"/>
+                <filter string="Rejected" name="active" domain="[('state', '=','reject')]"/>
+                <filter string="Requested" name="active" domain="[('state', '=','payment_request')]"/>
+                <filter string="Drafted" name="active" domain="[('state', '=','draft')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
     
 </odoo>
