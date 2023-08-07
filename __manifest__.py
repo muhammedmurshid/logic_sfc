@@ -2,7 +2,7 @@
     'name': "Student Faculty Club",
     'version': "14.0.1.0",
     'sequence': "0",
-    'depends': ['base', 'faculty','logic_base'],
+    'depends': ['base','faculty','logic_base'],
     'data': [
         'security/record_rules.xml',
         'security/ir.model.access.csv',

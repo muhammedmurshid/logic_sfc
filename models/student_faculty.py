@@ -89,6 +89,7 @@ class StudentFacultyClub(models.Model):
                 'ifsc_code':self.ifsc_code,
                 'bank_name':self.bank_name,
                 'bank_branch':self.bank_branch,
+                'partner_type':'student',
                 }
         }
     def reject_payment(self):
