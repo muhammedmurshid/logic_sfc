@@ -1,5 +1,6 @@
 from odoo import fields,models,api
 from odoo.exceptions import UserError
+from datetime import datetime
 
 class StudentFacultyClub(models.Model):
     _name="student.faculty"
@@ -17,7 +18,20 @@ class StudentFacultyClub(models.Model):
     topic = fields.Char(string="Topic",required=True)
     coordinator = fields.Many2one('res.users',string="Coordinator",readonly=True,default=lambda self: self.env.user)
     students_count = fields.Integer(string="No of Participants")
+    session_type = fields.Selection(selection=[('question','Questions'),('lecture','Lecture')],string="Session Type",default='lecture')
+    questions_no = fields.Integer(string="No of Questions")
+    lecture_topic = fields.Char(string="Lecture Topic")
     start_datetime = fields.Datetime(string="Start Datetime")
+    @api.onchange('start_datetime')
+    def _set_end_date_as_start_date(self):
+        if self.start_datetime:
+            self.end_datetime = datetime(
+                year = self.start_datetime.year,
+                month = self.start_datetime.month,
+                day = self.start_datetime.day,
+                minute = self.end_datetime.minute if self.end_datetime else self.start_datetime.minute ,
+                hour = self.end_datetime.hour if self.end_datetime else self.start_datetime.hour,
+            )
     end_datetime = fields.Datetime(string="End Datetime")
     company_id = fields.Many2one(
             'res.company', store=True, copy=False,
