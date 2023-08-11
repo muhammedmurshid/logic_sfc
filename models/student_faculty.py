@@ -87,7 +87,7 @@ class StudentFacultyClub(models.Model):
         # Display a popup with the entered details
         return {
             'type': 'ir.actions.act_window',
-            'name': 'Register Payment',
+            'name': 'Request Payment',
             'res_model': 'student.faculty.pay.request.wizard',
             'view_mode': 'form',
             'target': 'new',
