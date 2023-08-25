@@ -7,7 +7,7 @@
     </record>
     <menuitem name="SFC" id="menu_sfc"
               action="details_student_faculty_action"
-              web_icon="logic_base/static/description/icon.png"
+              web_icon="logic_sfc/static/description/icon.png"
               sequence="6"/>
     <menuitem name="SFC" id="menu_sfc_1"
               action="details_student_faculty_action"
