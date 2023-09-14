@@ -21,18 +21,6 @@ class StudentFacultyClub(models.Model):
     session_type = fields.Selection(selection=[('question','Questions'),('lecture','Lecture')],string="Session Type",default='lecture')
     questions_no = fields.Integer(string="No of Questions")
     lecture_topic = fields.Char(string="Lecture Topic")
-    start_datetime = fields.Datetime(string="Start Datetime")
-    @api.onchange('start_datetime')
-    def _set_end_date_as_start_date(self):
-        if self.start_datetime:
-            self.end_datetime = datetime(
-                year = self.start_datetime.year,
-                month = self.start_datetime.month,
-                day = self.start_datetime.day,
-                minute = self.end_datetime.minute if self.end_datetime else self.start_datetime.minute ,
-                hour = self.end_datetime.hour if self.end_datetime else self.start_datetime.hour,
-            )
-    end_datetime = fields.Datetime(string="End Datetime")
     company_id = fields.Many2one(
             'res.company', store=True, copy=False,
             string="Company",
@@ -44,13 +32,14 @@ class StudentFacultyClub(models.Model):
             default=lambda
             self: self.env.user.company_id.currency_id.id,
             readonly=True)
-    @api.depends('start_datetime','end_datetime')
+    @api.depends('sessions')
     def _compute_hours(self):
         for record in self:
-            if record.end_datetime and record.start_datetime:
-                record.hours =  round((record.end_datetime-record.start_datetime).seconds/3600,2)
-            else:
-                record.hours = 0
+            record.hours = 0
+            for session in record.sessions:
+                if session.end_datetime and session.start_datetime:
+                    record.hours +=  round((session.end_datetime-session.start_datetime).seconds/3600,2)
+
     hours = fields.Float(string="Total Hours",store=True,compute="_compute_hours")
     photo_show = fields.Boolean(string="Show/Hide Photo",default=False)
     photo = fields.Binary(string="Photo")
@@ -65,6 +54,7 @@ class StudentFacultyClub(models.Model):
     bank_name = fields.Char(string="Bank Name")
     bank_branch = fields.Char(string="Bank Branch")
     payment_request = fields.Many2one('payment.request',string="Payment Request")
+    sessions = fields.One2many('sfc.session','sfc_id',string="Sessions")
     def _get_default_payment_rate(self):
         payment_rate = self.env['student.faculty.rate'].search([],limit=1)
         if payment_rate:
@@ -81,8 +71,8 @@ class StudentFacultyClub(models.Model):
         return result
 
     def confirm_sfc(self):
-        if not self.start_datetime or not self.end_datetime:
-            raise UserError('Datetimes cannot be empty when confirming the record')
+        if not self.sessions:
+            raise UserError('Sessions cannot be empty when confirming the record')
         self.write({
             'state':'confirm'
         })

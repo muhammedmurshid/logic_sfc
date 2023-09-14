@@ -38,7 +38,7 @@
         <field name="arch" type="xml">
             <form string="Student Faculty Club">
                 <header>
-                    <button name="confirm_sfc" groups="faculty.coordinator_user" string="Confirm" help="Click here to confirm the record" type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','draft')]}"/>
+                    <button name="confirm_sfc" groups="faculty.coordinator_user,faculty.group_faculty_administrator" string="Confirm" help="Click here to confirm the record" type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','draft')]}"/>
                     <button name="request_payment" string="Request Payment" help="Click here to pay the total amount" type="object" class="oe_highlight" attrs="{'invisible':[('state','not in',('confirm','reject') )]}"/>
                     <!-- <button name="reject_payment" groups="faculty.group_accounting_manager" string="Reject" help="Click here to pay the total amount" type="object" class="btn-danger" attrs="{'invisible':[('state','!=','confirm')]}"/> -->
                     <button name="reset_to_draft" string="Reset to Draft" help="Click here to reset the record to draft state" type="object" class="btn-warning" attrs="{'invisible':[('state','!=','confirm')]}"/>
@@ -64,18 +64,31 @@
                             <field name="photo" widget="image" attrs="{'invisible':[('photo_show','=',False)]}"/>
                         </group>
                         <group>
-                            <field name="session_type" />
+                            <field name="session_type" attrs="{'readonly':[('state','not in',(False,'draft'))]}"/>
                             <field name="questions_no" attrs="{'invisible':[('session_type','!=','question')]}" />
                             <field name="lecture_topic" attrs="{'invisible':[('session_type','!=','lecture')]}" />
                             <field name="students_count" attrs="{'readonly':[('state','not in',(False,'draft'))]}"/>
-                            <field name="start_datetime" attrs="{'readonly':[('state','not in',(False,'draft'))]}"/>
-                            <field name="end_datetime" attrs="{'readonly':[('state','not in',(False,'draft'))]}"/>
+                            <!-- <field name="start_datetime" attrs="{'readonly':[('state','not in',(False,'draft'))]}"/>
+                            <field name="end_datetime" attrs="{'readonly':[('state','not in',(False,'draft'))]}"/> -->
                             <field name="hours"/>
                             <field name="payment_rate" widget="monetary" attrs="{'readonly':[('state','not in',(False,'draft'))]}"/>
                         </group>
                     </group>
                     <group>
                         <notebook>
+                            <page string="Sessions">
+                                <field name="sessions" context="{'default_lecture_topic':lecture_topic}">
+                                    <tree editable="bottom">
+                                        <field name="lecture_topic" attrs="{'column_invisible':[('parent.session_type', '!=', 'lecture')]}" />
+                                        <field name="questions_no" attrs="{'column_invisible':[('parent.session_type', '!=', 'question')]}" />
+                                        <field name="students_count"/>
+                                        <field name="start_datetime"/>
+                                        <field name="end_datetime"/>
+                                        <field name="hours"/>
+                                    </tree>
+                                </field>
+                            </page>
+
                             <page string="Banking Details">
                                 <group>
                                     <group>
@@ -97,6 +110,7 @@
                                     </group>
                                 </group>
                             </page>
+
                         </notebook>
                     </group>
                 </sheet>
