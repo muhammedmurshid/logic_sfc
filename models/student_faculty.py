@@ -17,10 +17,11 @@ class StudentFacultyClub(models.Model):
     student_id = fields.Many2one('logic.students',string="Student",required=True)
     topic = fields.Char(string="Topic",required=True)
     coordinator = fields.Many2one('res.users',string="Coordinator",readonly=True,default=lambda self: self.env.user)
-    students_count = fields.Integer(string="No of Participants")
+    # students_count = fields.Integer(string="No of Participants")
     session_type = fields.Selection(selection=[('question','Questions'),('lecture','Lecture')],string="Session Type",default='lecture')
     questions_no = fields.Integer(string="No of Questions")
     lecture_topic = fields.Char(string="Lecture Topic")
+    date = fields.Date(string="Date",required=True)
     company_id = fields.Many2one(
             'res.company', store=True, copy=False,
             string="Company",

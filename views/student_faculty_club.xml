@@ -21,6 +21,8 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
+                <field name="date"/>
+
                 <!-- <field name="topic"/>
                 <field name="student_id"/> -->
                 <field name="batch_id"/>
@@ -64,10 +66,11 @@
                             <field name="photo" widget="image" attrs="{'invisible':[('photo_show','=',False)]}"/>
                         </group>
                         <group>
+                            <field name="date"/>
                             <field name="session_type" attrs="{'readonly':[('state','not in',(False,'draft'))]}"/>
                             <field name="questions_no" attrs="{'invisible':[('session_type','!=','question')]}" />
                             <field name="lecture_topic" attrs="{'invisible':[('session_type','!=','lecture')]}" />
-                            <field name="students_count" attrs="{'readonly':[('state','not in',(False,'draft'))]}"/>
+                            <!-- <field name="students_count" attrs="{'readonly':[('state','not in',(False,'draft'))]}"/> -->
                             <!-- <field name="start_datetime" attrs="{'readonly':[('state','not in',(False,'draft'))]}"/>
                             <field name="end_datetime" attrs="{'readonly':[('state','not in',(False,'draft'))]}"/> -->
                             <field name="hours"/>
