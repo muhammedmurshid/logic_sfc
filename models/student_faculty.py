@@ -41,6 +41,14 @@ class StudentFacultyClub(models.Model):
                 if session.end_datetime and session.start_datetime:
                     record.hours +=  round((session.end_datetime-session.start_datetime).seconds/3600,2)
 
+    @api.onchange('student_id')
+    def get_bank_details(self):
+        self.account_name = self.student_id.holder_name 
+        self.account_no = self.student_id.account_number
+        self.ifsc_code = self.student_id.ifsc_code
+        self.bank_name = self.student_id.bank_name
+        self.bank_branch = self.student_id.branch
+
     hours = fields.Float(string="Total Hours",store=True,compute="_compute_hours")
     photo_show = fields.Boolean(string="Show/Hide Photo",default=False)
     photo = fields.Binary(string="Photo")
