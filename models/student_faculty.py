@@ -31,7 +31,8 @@ class StudentFacultyClub(models.Model):
     @api.onchange('is_coordinator_head')
     def _compute_hide_payment_request_btn(self):
         for record in self:
-            if record.state in ('confirm','approved') and record.is_coordinator_head:
+            
+            if record.state in ('confirm','approved') and (record.is_coordinator_head or not record.coordinator_head):
                 record.hide_payment_request_btn = False
             elif record.state=='approved' and not record.is_coordinator_head:
                 record.hide_payment_request_btn = False
