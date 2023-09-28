@@ -22,7 +22,7 @@ class StudentFacultyClub(models.Model):
     # students_count = fields.Integer(string="No of Participants")
     session_type = fields.Selection(selection=[('question','Questions'),('lecture','Lecture')],string="Session Type",default='lecture')
     questions_no = fields.Integer(string="No of Questions")
-    lecture_topic = fields.Char(string="Lecture Topic")
+    lecture_topic = fields.Char(string="Lecture Topic",compute="get_total_students",store=True)
     total_students = fields.Integer(string="Total Strength", readonly=True)
     coordinator_head = fields.Many2one('res.users',string="Coordinator's Head", default=lambda self: self.env.user.employee_id.parent_id.user_id.id)
     is_coordinator_head = fields.Boolean(compute="_compute_is_coordinator_head")
@@ -57,12 +57,13 @@ class StudentFacultyClub(models.Model):
             else:
                 record.is_coordinator_head = False
 
-    @api.onchange('batch_id')
+    @api.depends('batch_id')
     def get_total_students(self):
         # for record in self:
         if self.batch_id:
             self.total_students = self.env['logic.students'].search_count([('batch_id','=',self.batch_id.id)])
-
+        else:
+            self.total_students = 0
     date = fields.Date(string="Date",required=True)
     company_id = fields.Many2one(
             'res.company', store=True, copy=False,
@@ -185,6 +186,10 @@ class StudentFacultyClub(models.Model):
 
 class StudentFacultyRate(models.Model):
     _name="student.faculty.rate"
+    name = fields.Char(string="Name",compute="_compute_name")
+    def _compute_name(self):
+        for record in self:
+            record.name = "SFC Rate " + str(record.id)
     company_id = fields.Many2one(
             'res.company', store=True, copy=False,
             string="Company",

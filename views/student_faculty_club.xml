@@ -78,8 +78,8 @@
                         <group>
                             <field name="date"/>
                             <field name="session_type" attrs="{'readonly':[('state','not in',(False,'draft'))]}"/>
-                            <field name="questions_no" attrs="{'invisible':[('session_type','!=','question')]}" />
-                            <field name="lecture_topic" attrs="{'invisible':[('session_type','!=','lecture')]}" />
+                            <field name="questions_no" attrs="{'invisible':[('session_type','!=','question')]}" invisible="1" />
+                            <field name="lecture_topic" attrs="{'invisible':[('session_type','!=','lecture')]}" invisible="1"/>
                             <!-- <field name="students_count" attrs="{'readonly':[('state','not in',(False,'draft'))]}"/> -->
                             <!-- <field name="start_datetime" attrs="{'readonly':[('state','not in',(False,'draft'))]}"/>
                             <field name="end_datetime" attrs="{'readonly':[('state','not in',(False,'draft'))]}"/> -->
@@ -90,7 +90,7 @@
                     <group>
                         <notebook>
                             <page string="Sessions">
-                                <field name="sessions" context="{'default_lecture_topic':lecture_topic,'default_total_students':total_students}">
+                                <field name="sessions" context="{'default_lecture_topic':lecture_topic,'default_total_students':total_students,'default_questions_no': questions_no}">
                                     <tree editable="bottom">
                                         <field name="lecture_topic" attrs="{'column_invisible':[('parent.session_type', '!=', 'lecture')]}" />
                                         <field name="questions_no" attrs="{'column_invisible':[('parent.session_type', '!=', 'question')]}" />
