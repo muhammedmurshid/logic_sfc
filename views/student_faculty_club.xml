@@ -28,6 +28,8 @@
                 <field name="batch_id"/>
                 <field name="coordinator"/>
                 <field name="student_id"/>
+                <field name="average_attendance"/>
+                <field name="total_students"/>
                 <field string="Status" name="state" decoration-success="state == 'paid'" decoration-info="state == 'confirm'" decoration-warning="state == 'payment_request'" decoration-danger="state == 'reject'" widget="badge" />
             </tree>
 

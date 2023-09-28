@@ -27,6 +27,17 @@ class StudentFacultyClub(models.Model):
     coordinator_head = fields.Many2one('res.users',string="Coordinator's Head", default=lambda self: self.env.user.employee_id.parent_id.user_id.id)
     is_coordinator_head = fields.Boolean(compute="_compute_is_coordinator_head")
     hide_payment_request_btn = fields.Boolean(compute="_compute_hide_payment_request_btn")
+    average_attendance = fields.Float(string="Average Attendance",compute="_compute_average_attendance")
+
+    def _compute_average_attendance(self):
+        for record in self:
+            record.average_attendance = 0
+            if record.sessions:
+                average_attendance = 0
+                for session in record.sessions:
+                    average_attendance += session.students_count
+                average_attendance = round(average_attendance/len(record.sessions),2)
+                record.average_attendance = average_attendance
 
     @api.onchange('is_coordinator_head')
     def _compute_hide_payment_request_btn(self):
@@ -51,8 +62,7 @@ class StudentFacultyClub(models.Model):
         # for record in self:
         if self.batch_id:
             self.total_students = self.env['logic.students'].search_count([('batch_id','=',self.batch_id.id)])
-        else:
-            self.total_students = 0
+
     date = fields.Date(string="Date",required=True)
     company_id = fields.Many2one(
             'res.company', store=True, copy=False,
