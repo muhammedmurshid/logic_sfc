@@ -4,6 +4,8 @@ from datetime import datetime
 
 class StudentFacultyClub(models.Model):
     _name="student.faculty"
+    _description="Student Faculty"
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     def _compute_name(self):
         for record in self:
             name=""
@@ -21,6 +23,35 @@ class StudentFacultyClub(models.Model):
     session_type = fields.Selection(selection=[('question','Questions'),('lecture','Lecture')],string="Session Type",default='lecture')
     questions_no = fields.Integer(string="No of Questions")
     lecture_topic = fields.Char(string="Lecture Topic")
+    total_students = fields.Integer(string="Total Strength", readonly=True)
+    coordinator_head = fields.Many2one('res.users',string="Coordinator's Head", default=lambda self: self.env.user.employee_id.parent_id.user_id.id)
+    is_coordinator_head = fields.Boolean(compute="_compute_is_coordinator_head")
+    hide_payment_request_btn = fields.Boolean(compute="_compute_hide_payment_request_btn")
+
+    @api.onchange('is_coordinator_head')
+    def _compute_hide_payment_request_btn(self):
+        for record in self:
+            if record.state in ('confirm','approved') and record.is_coordinator_head:
+                record.hide_payment_request_btn = False
+            elif record.state=='approved' and not record.is_coordinator_head:
+                record.hide_payment_request_btn = False
+            else:
+                record.hide_payment_request_btn = True
+
+    def _compute_is_coordinator_head(self):
+        for record in self:
+            if self.env.user.id==record.coordinator_head.id:
+                record.is_coordinator_head = True
+            else:
+                record.is_coordinator_head = False
+
+    @api.onchange('batch_id')
+    def get_total_students(self):
+        # for record in self:
+        if self.batch_id:
+            self.total_students = self.env['logic.students'].search_count([('batch_id','=',self.batch_id.id)])
+        else:
+            self.total_students = 0
     date = fields.Date(string="Date",required=True)
     company_id = fields.Many2one(
             'res.company', store=True, copy=False,
@@ -56,7 +87,7 @@ class StudentFacultyClub(models.Model):
         for record in self:
             record.amount_total = record.hours * record.payment_rate
     amount_total = fields.Monetary(string="Total Amount",compute="_compute_amount_total")
-    state = fields.Selection(string="State",selection=[('draft','Draft'),('confirm','Confirmed'),('payment_request','Payment Requested'),('paid','Paid'),('reject','Rejected')],tracking=True)
+    state = fields.Selection(string="State",selection=[('draft','Draft'),('confirm','Confirmed'),('sent_to_approve','Sent for Head Approval'),('approved','Head Approved'),('payment_request','Payment Requested'),('paid','Paid'),('reject','Rejected'),('cancel','Cancelled)')],tracking=True)
     account_name = fields.Char(string="Account Name")
     account_no = fields.Char(string="Account No")
     ifsc_code = fields.Char(string="IFSC Code")
@@ -84,6 +115,20 @@ class StudentFacultyClub(models.Model):
             raise UserError('Sessions cannot be empty when confirming the record')
         self.write({
             'state':'confirm'
+        })
+
+    def action_sent_head_approval(self):
+        self.activity_schedule('logic_sfc.mail_activity_type_sfc', user_id=self.coordinator_head.id,
+                summary=f'To Approve: SFC from {self.coordinator.name}')
+        self.write({
+            'state':'sent_to_approve',
+        })
+
+    def action_head_approve(self):
+        self.activity_ids.unlink()
+        self.message_post(body=f"SFC Approved by {self.coordinator_head.name}")
+        self.write({
+            'state':'approved',
         })
 
     def reset_to_draft(self):
@@ -115,8 +160,16 @@ class StudentFacultyClub(models.Model):
                 'partner_type':'student',
                 }
         }
+    
+    def action_reject(self):
+        self.activity_ids.unlink()
+        self.write({
+            'state' : 'reject',
+        })   
     def reject_payment(self):
-        self.state = 'reject'
+        self.write({
+            'state' : 'reject',
+        })
 
 
 class StudentFacultyRate(models.Model):

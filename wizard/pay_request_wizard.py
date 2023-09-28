@@ -16,7 +16,7 @@ class  PayRequestWizard(models.TransientModel):
     coordinator = fields.Many2one('res.users',string="Coordinator",readonly=True,default=lambda self: self.env.user)
     amount = fields.Monetary(string="Amount",default=lambda self: self._context.get('amount'))
     request_date = fields.Date(string="Date",default=datetime.today())
-    sfc_id = fields.Many2one('student.faculty',string="SFC ID",default = lambda self: self._context.get('sfc_id'))
+    sfc_id = fields.Many2one('student.faculty',string="SFC ID",default = lambda self: self._context.get('sfc_id'), readonly=True)
     description = fields.Text(string="Description")
     account_name = fields.Char(string="Account Name",default = lambda self: self._context.get('account_name'))
     account_no = fields.Char(string="Account No",default = lambda self: self._context.get('account_no'))

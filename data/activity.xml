@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="mail_activity_type_sfc" model="mail.activity.type">
+            <field name="name">Student Faculty Club</field>
+            <field name="res_model_id" ref="logic_sfc.model_student_faculty"/>
+            <!-- <field name="delay_count">30</field> -->
+        </record>
+    </data>
+</odoo>

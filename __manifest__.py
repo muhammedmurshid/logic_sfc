@@ -5,6 +5,7 @@
     'sequence': "0",
     'depends': ['base','logic_base',],
     'data': [
+        'data/activity.xml',
         'security/record_rules.xml',
         'security/ir.model.access.csv',
         'wizard/pay_wizard_view.xml',

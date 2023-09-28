@@ -6,8 +6,9 @@ class SfcSession(models.Model):
     _name = "sfc.session"
     start_datetime = fields.Datetime(string="Start Time")
     end_datetime = fields.Datetime(string="End Time")
-    sfc_id = fields.Many2one('student.faculty')
+    sfc_id = fields.Many2one('student.faculty',string="SFC")
     session_type = fields.Selection(related="sfc_id.session_type",string="Session Type")
+    total_students = fields.Integer(string="Total Strength",default = lambda self: self.env.context.get('total_students'))
     students_count = fields.Integer(string="Participants")
     hours = fields.Float(string="Total Hours")
 

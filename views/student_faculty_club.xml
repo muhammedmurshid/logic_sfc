@@ -41,10 +41,13 @@
             <form string="Student Faculty Club">
                 <header>
                     <button name="confirm_sfc" groups="faculty.coordinator_user,faculty.group_faculty_administrator" string="Confirm" help="Click here to confirm the record" type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','draft')]}"/>
-                    <button name="request_payment" string="Request Payment" help="Click here to pay the total amount" type="object" class="oe_highlight" attrs="{'invisible':[('state','not in',('confirm','reject') )]}"/>
+                    <button name="action_sent_head_approval" groups="faculty.coordinator_user" string="Sent For Approval" help="Click here to create an activity for your Academic head to approve this SFC" type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','confirm')]}"/>
+                    <button name="action_head_approve" groups="faculty.group_faculty_administrator" string="Approve" help="Click here to create an activity for your Academic head to approve this SFC" type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','sent_to_approve')]}"/>
+                    <button name="action_reject" groups="faculty.group_faculty_administrator" string="Reject" help="Click here to reject this SFC" type="object" class="btn-danger" attrs="{'invisible':[('state','!=','sent_to_approve')]}"/>
+                    <button name="request_payment" string="Request Payment" help="Click here to pay the total amount" type="object" class="oe_highlight" attrs="{'invisible':[('hide_payment_request_btn','=',True)]}"/>
                     <!-- <button name="reject_payment" groups="faculty.group_accounting_manager" string="Reject" help="Click here to pay the total amount" type="object" class="btn-danger" attrs="{'invisible':[('state','!=','confirm')]}"/> -->
                     <button name="reset_to_draft" string="Reset to Draft" help="Click here to reset the record to draft state" type="object" class="btn-warning" attrs="{'invisible':[('state','!=','confirm')]}"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,payment_request,paid,reject"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,sent_to_approve,approved,payment_request,paid,reject"/>
                 </header>
                 <sheet>
                     <widget name="web_ribbon" text="PAID" bg_color="bg-success" attrs="{'invisible':[('state','!=','paid')]}"/>
@@ -53,10 +56,14 @@
 
                     <group>
                         <group>
+                            <field name="hide_payment_request_btn" invisible="1"/>
                             <field name="topic" attrs="{'readonly':[('state','not in',(False,'draft'))]}"/>
                             <field name="batch_id" attrs="{'readonly':[('state','not in',(False,'draft'))]}" widget="many2one" context="{'custom_name_display': True}"/>
+                            <field name="total_students"/>
                             <field name="student_id" attrs="{'readonly':[('state','not in',(False,'draft'))]}" domain="[('batch_id','=',batch_id)]"/>
                             <field name="coordinator"/>
+                            <field name="coordinator_head" readonly="1"/>
+                            <field name="is_coordinator_head" invisible="1"/>
                             <label for="photo_show"/>
                             <div class="o_row">
                                 <field name="photo_show"/>
@@ -80,11 +87,13 @@
                     <group>
                         <notebook>
                             <page string="Sessions">
-                                <field name="sessions" context="{'default_lecture_topic':lecture_topic}">
+                                <field name="sessions" context="{'default_lecture_topic':lecture_topic,'default_total_students':total_students}">
                                     <tree editable="bottom">
                                         <field name="lecture_topic" attrs="{'column_invisible':[('parent.session_type', '!=', 'lecture')]}" />
                                         <field name="questions_no" attrs="{'column_invisible':[('parent.session_type', '!=', 'question')]}" />
-                                        <field name="students_count"/>
+                                        <field name="students_count"/> 
+                                        <field name="total_students"/>
+
                                         <field name="start_datetime"/>
                                         <field name="end_datetime"/>
                                         <field name="hours"/>
@@ -117,6 +126,11 @@
                         </notebook>
                     </group>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids" options="{'post_refresh': 'recipients'}"/>
+                </div>
             </form>
         </field>
     </record>
