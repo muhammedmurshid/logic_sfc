@@ -59,11 +59,11 @@ class StudentFacultyClub(models.Model):
 
     @api.depends('batch_id')
     def get_total_students(self):
-        # for record in self:
-        if self.batch_id:
-            self.total_students = self.env['logic.students'].search_count([('batch_id','=',self.batch_id.id)])
-        else:
-            self.total_students = 0
+        for record in self:
+            if record.batch_id:
+                record.total_students = self.env['logic.students'].search_count([('batch_id','=',record.batch_id.id)])
+            else:
+                record.total_students = 0
     date = fields.Date(string="Date",required=True)
     company_id = fields.Many2one(
             'res.company', store=True, copy=False,
