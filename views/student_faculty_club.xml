@@ -62,6 +62,7 @@
                             <field name="hide_payment_request_btn" invisible="1"/>
                             <field name="topic" attrs="{'readonly':[('state','not in',(False,'draft'))]}"/>
                             <field name="batch_id" attrs="{'readonly':[('state','not in',(False,'draft'))]}" widget="many2one" context="{'custom_name_display': True}"/>
+                            <field name="branch"/>
                             <field name="total_students"/>
                             <field name="student_id" attrs="{'readonly':[('state','not in',(False,'draft'))]}" domain="[('batch_id','=',batch_id)]"/>
                             <field name="coordinator"/>

@@ -19,6 +19,7 @@ class StudentFacultyClub(models.Model):
 
     name = fields.Char(string="Name", compute="_compute_name")
     batch_id = fields.Many2one('logic.base.batch', string="Batch", required=True)
+    branch = fields.Many2one('logic.base.branches', related='batch_id.branch_id', string="Branch")
     student_id = fields.Many2one('logic.students', string="Student Faculty", required=True)
     topic = fields.Char(string="Topic", required=True)
     coordinator = fields.Many2one('res.users', string="Coordinator", readonly=True, default=lambda self: self.env.user)
