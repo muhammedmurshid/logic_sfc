@@ -21,7 +21,8 @@ class StudentFacultyClub(models.Model):
     batch_id = fields.Many2one('logic.base.batch', string="Batch", required=True)
     course_id = fields.Many2one('logic.base.courses', related='batch_id.course_id', string="Course")
     branch = fields.Many2one('logic.base.branches', related='batch_id.branch_id', string="Branch")
-    student_id = fields.Many2one('logic.students', string="Student Faculty", required=True)
+    student_id = fields.Many2one('logic.students', string="Student Faculty")
+    employee_id = fields.Many2one('hr.employee', string="Faculty")
     topic = fields.Char(string="Topic", required=True)
     coordinator = fields.Many2one('res.users', string="Coordinator", readonly=True, default=lambda self: self.env.user)
     # students_count = fields.Integer(string="No of Participants")
@@ -56,6 +57,14 @@ class StudentFacultyClub(models.Model):
                 record.hide_payment_request_btn = False
             else:
                 record.hide_payment_request_btn = True
+
+    @api.onchange('sfc_type')
+    def _onchange_faculty_type(self):
+        for record in self:
+            if record.sfc_type == 'student':
+                record.employee_id = False
+            elif record.sfc_type == 'staff':
+                record.student_id = False
 
     def _compute_is_coordinator_head(self):
         for record in self:
@@ -93,17 +102,25 @@ class StudentFacultyClub(models.Model):
                 if session.end_datetime and session.start_datetime:
                     record.hours += round((session.end_datetime - session.start_datetime).seconds / 3600, 2)
 
-    @api.onchange('student_id')
+    @api.onchange('student_id', 'employee_id')
     def get_bank_details(self):
-        self.account_name = self.student_id.holder_name
-        self.account_no = self.student_id.account_number
-        self.ifsc_code = self.student_id.ifsc_code
-        self.bank_name = self.student_id.bank_name
-        self.bank_branch = self.student_id.branch
+        if self.sfc_type == 'student':
+            self.account_name = self.student_id.holder_name
+            self.account_no = self.student_id.account_number
+            self.ifsc_code = self.student_id.ifsc_code
+            self.bank_name = self.student_id.bank_name
+            self.bank_branch = self.student_id.branch
+        elif self.sfc_type == 'staff':
+            self.account_name = self.employee_id.name_as_per_bank
+            self.account_no = self.employee_id.bank_acc_number
+            self.ifsc_code = self.employee_id.ifsc_code
+            self.bank_name = self.employee_id.bank_name
+            self.bank_branch = self.employee_id.branch_bank
 
     hours = fields.Float(string="Total Hours", store=True, compute="_compute_hours")
     photo_show = fields.Boolean(string="Show/Hide Photo", default=False)
     photo = fields.Binary(string="Photo")
+    sfc_type = fields.Selection(selection=[('student', 'Student'), ('staff', 'Staff')], string="Type")
 
     def _compute_amount_total(self):
         for record in self:

@@ -30,7 +30,9 @@
                 <field name="student_id"/>
                 <field name="average_attendance"/>
                 <field name="total_students"/>
-                <field string="Status" name="state" decoration-success="state == 'paid'" decoration-info="state == 'confirm'" decoration-warning="state == 'payment_request'" decoration-danger="state == 'reject'" widget="badge" />
+                <field string="Status" name="state" decoration-success="state == 'paid'"
+                       decoration-info="state == 'confirm'" decoration-warning="state == 'payment_request'"
+                       decoration-danger="state == 'reject'" widget="badge"/>
             </tree>
 
         </field>
@@ -43,36 +45,62 @@
         <field name="arch" type="xml">
             <form string="Student Faculty Club">
                 <header>
-                    <button name="confirm_sfc" groups="faculty.coordinator_user,faculty.group_faculty_administrator" string="Confirm" help="Click here to confirm the record" type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','draft')]}"/>
-                    <button name="action_sent_head_approval" groups="faculty.coordinator_user" string="Sent For Approval" help="Click here to create an activity for your Academic head to approve this SFC" type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','confirm')]}"/>
-                    <button name="action_head_approve" groups="faculty.group_faculty_administrator" string="Approve" help="Click here to create an activity for your Academic head to approve this SFC" type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','sent_to_approve')]}"/>
-                    <button name="action_reject" groups="faculty.group_faculty_administrator" string="Reject" help="Click here to reject this SFC" type="object" class="btn-danger" attrs="{'invisible':[('state','!=','sent_to_approve')]}"/>
-                    <button name="request_payment" string="Request Payment" help="Click here to pay the total amount" type="object" class="oe_highlight" attrs="{'invisible':[('hide_payment_request_btn','=',True)]}"/>
+                    <button name="confirm_sfc" groups="faculty.coordinator_user,faculty.group_faculty_administrator"
+                            string="Confirm" help="Click here to confirm the record" type="object" class="oe_highlight"
+                            attrs="{'invisible':[('state','!=','draft')]}"/>
+                    <button name="action_sent_head_approval" groups="faculty.coordinator_user"
+                            string="Sent For Approval"
+                            help="Click here to create an activity for your Academic head to approve this SFC"
+                            type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','confirm')]}"/>
+                    <button name="action_head_approve" groups="faculty.group_faculty_administrator" string="Approve"
+                            help="Click here to create an activity for your Academic head to approve this SFC"
+                            type="object" class="oe_highlight"
+                            attrs="{'invisible':[('state','!=','sent_to_approve')]}"/>
+                    <button name="action_reject" groups="faculty.group_faculty_administrator" string="Reject"
+                            help="Click here to reject this SFC" type="object" class="btn-danger"
+                            attrs="{'invisible':[('state','!=','sent_to_approve')]}"/>
+                    <button name="request_payment" string="Request Payment" help="Click here to pay the total amount"
+                            type="object" class="oe_highlight"
+                            attrs="{'invisible':[('hide_payment_request_btn','=',True)]}"/>
                     <!-- <button name="reject_payment" groups="faculty.group_accounting_manager" string="Reject" help="Click here to pay the total amount" type="object" class="btn-danger" attrs="{'invisible':[('state','!=','confirm')]}"/> -->
-                    <button name="reset_to_draft" string="Reset to Draft" help="Click here to reset the record to draft state" type="object" class="btn-warning" attrs="{'invisible':[('state','!=','confirm')]}"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,sent_to_approve,approved,payment_request,paid,reject"/>
+                    <button name="reset_to_draft" string="Reset to Draft"
+                            help="Click here to reset the record to draft state" type="object" class="btn-warning"
+                            attrs="{'invisible':[('state','!=','confirm')]}"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,confirm,sent_to_approve,approved,payment_request,paid,reject"/>
                 </header>
                 <sheet>
-                    <widget name="web_ribbon" text="PAID" bg_color="bg-success" attrs="{'invisible':[('state','!=','paid')]}"/>
-                    <widget name="web_ribbon" text="REJECTED" bg_color="bg-danger" attrs="{'invisible':[('state','!=','reject')]}"/>
-                    <widget name="web_ribbon" text="PAYMENT REQUESTED" bg_color="bg-warning" attrs="{'invisible':[('state','!=','payment_request')]}"/>
+                    <widget name="web_ribbon" text="PAID" bg_color="bg-success"
+                            attrs="{'invisible':[('state','!=','paid')]}"/>
+                    <widget name="web_ribbon" text="REJECTED" bg_color="bg-danger"
+                            attrs="{'invisible':[('state','!=','reject')]}"/>
+                    <widget name="web_ribbon" text="PAYMENT REQUESTED" bg_color="bg-warning"
+                            attrs="{'invisible':[('state','!=','payment_request')]}"/>
 
                     <group>
                         <group>
                             <field name="hide_payment_request_btn" invisible="1"/>
                             <field name="topic" attrs="{'readonly':[('state','not in',(False,'draft'))]}"/>
-                            <field name="batch_id" attrs="{'readonly':[('state','not in',(False,'draft'))]}" widget="many2one" context="{'custom_name_display': True}"/>
+                            <field name="batch_id" attrs="{'readonly':[('state','not in',(False,'draft'))]}"
+                                   widget="many2one" context="{'custom_name_display': True}"  options="{'no_create':True}"/>
                             <field name="course_id"/>
                             <field name="branch"/>
                             <field name="total_students"/>
-                            <field name="student_id" attrs="{'readonly':[('state','not in',(False,'draft'))]}" domain="[('batch_id','=',batch_id)]"/>
+                            <field name="sfc_type" required="1"/>
+                            <field name="student_id"
+                                   attrs="{'readonly':[('state','not in',(False,'draft'))],'invisible':[('sfc_type','!=','student')], 'required':[('sfc_type','=','student')]}"
+                                   domain="[('batch_id','=',batch_id)]"/>
+                            <field name="employee_id"
+                                   attrs="{'readonly':[('state','not in',(False,'draft'))],'invisible':[('sfc_type','!=','staff')], 'required':[('sfc_type','=','staff')]}"
+                                  />
+
                             <field name="coordinator"/>
                             <field name="coordinator_head" readonly="1"/>
                             <field name="is_coordinator_head" invisible="1"/>
                             <label for="photo_show"/>
                             <div class="o_row">
                                 <field name="photo_show"/>
-                                <button name="show_hide_photo" type="object"  class="btn-success" >Show/Hide</button>                               
+                                <button name="show_hide_photo" type="object" class="btn-success">Show/Hide</button>
                                 <!-- <button name="custom_method" string="Copy to Clipboard" type="button" class="o_form_button_edit btn btn-primary"/>                            </div> -->
                             </div>
                             <field name="photo" widget="image" attrs="{'invisible':[('photo_show','=',False)]}"/>
@@ -80,23 +108,29 @@
                         <group>
                             <field name="date"/>
                             <field name="session_type" attrs="{'readonly':[('state','not in',(False,'draft'))]}"/>
-                            <field name="questions_no" attrs="{'invisible':[('session_type','!=','question')]}" invisible="1" />
-                            <field name="lecture_topic" attrs="{'invisible':[('session_type','!=','lecture')]}" invisible="1"/>
+                            <field name="questions_no" attrs="{'invisible':[('session_type','!=','question')]}"
+                                   invisible="1"/>
+                            <field name="lecture_topic" attrs="{'invisible':[('session_type','!=','lecture')]}"
+                                   invisible="1"/>
                             <!-- <field name="students_count" attrs="{'readonly':[('state','not in',(False,'draft'))]}"/> -->
                             <!-- <field name="start_datetime" attrs="{'readonly':[('state','not in',(False,'draft'))]}"/>
                             <field name="end_datetime" attrs="{'readonly':[('state','not in',(False,'draft'))]}"/> -->
                             <field name="hours"/>
-                            <field name="payment_rate" widget="monetary" attrs="{'readonly':[('state','not in',(False,'draft'))]}"/>
+                            <field name="payment_rate" widget="monetary"
+                                   attrs="{'readonly':[('state','not in',(False,'draft'))]}"/>
                         </group>
                     </group>
                     <group>
                         <notebook>
                             <page string="Sessions">
-                                <field name="sessions" context="{'default_lecture_topic':lecture_topic,'default_total_students':total_students,'default_questions_no': questions_no}">
+                                <field name="sessions"
+                                       context="{'default_lecture_topic':lecture_topic,'default_total_students':total_students,'default_questions_no': questions_no}">
                                     <tree editable="bottom">
-                                        <field name="lecture_topic" attrs="{'column_invisible':[('parent.session_type', '!=', 'lecture')]}" />
-                                        <field name="questions_no" attrs="{'column_invisible':[('parent.session_type', '!=', 'question')]}" />
-                                        <field name="students_count"/> 
+                                        <field name="lecture_topic"
+                                               attrs="{'column_invisible':[('parent.session_type', '!=', 'lecture')]}"/>
+                                        <field name="questions_no"
+                                               attrs="{'column_invisible':[('parent.session_type', '!=', 'question')]}"/>
+                                        <field name="students_count"/>
                                         <field name="total_students"/>
 
                                         <field name="start_datetime"/>
@@ -109,7 +143,8 @@
                             <page string="Banking Details">
                                 <group>
                                     <group>
-                                        <field name="account_name" help="Enter the account holder's name here(as in Passbook)"/>
+                                        <field name="account_name"
+                                               help="Enter the account holder's name here(as in Passbook)"/>
                                         <field name="account_no"/>
                                         <field name="bank_name"/>
                                         <field name="ifsc_code"/>
@@ -121,7 +156,9 @@
                                             <div class="oe_subtotal_footer_separator oe_inline o_td_label">
                                                 <label for="amount_total"/>
                                             </div>
-                                            <field name="amount_total" attrs="{'readonly':[('state','not in',(False,'draft'))]}" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary"/>
+                                            <field name="amount_total"
+                                                   attrs="{'readonly':[('state','not in',(False,'draft'))]}" nolabel="1"
+                                                   class="oe_subtotal_footer_separator" widget="monetary"/>
                                         </group>
                                         <div class="oe_clear"/>
                                     </group>
@@ -180,5 +217,5 @@
             </search>
         </field>
     </record>
-    
+
 </odoo>
