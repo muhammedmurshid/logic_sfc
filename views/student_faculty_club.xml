@@ -29,7 +29,9 @@
                 <field name="coordinator"/>
                 <field name="student_id"/>
                 <field name="average_attendance"/>
+
                 <field name="total_students"/>
+                <field name="hours"/>
                 <field string="Status" name="state" decoration-success="state == 'paid'"
                        decoration-info="state == 'confirm'" decoration-warning="state == 'payment_request'"
                        decoration-danger="state == 'reject'" widget="badge"/>
